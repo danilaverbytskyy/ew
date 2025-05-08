@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Конкурс 3 - Аниме-персонажи</title>
+    <title>Конкурс 3 - Класс убийц</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root {
@@ -16,7 +16,7 @@
             font-family: 'Comic Sans MS', cursive, sans-serif;
             background-color: #f8f9fa;
             padding-bottom: 2rem;
-            touch-action: pan-y; /* Для лучшей работы touch-событий */
+            touch-action: pan-y;
         }
 
         .header-bar {
@@ -67,9 +67,10 @@
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            touch-action: none; /* Для drag & drop на мобильных */
+            touch-action: none;
             user-select: none;
             transition: transform 0.2s;
+            background-color: white;
         }
 
         .character-item.dragging {
@@ -79,22 +80,19 @@
         }
 
         .character-img {
-            width: 100%;
+            width: 80%;
             height: 150px;
             object-fit: cover;
             display: block;
+            border-bottom: 2px solid #f0f0f0;
         }
 
         .character-name {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0,0,0,0.7);
-            color: white;
             padding: 0.5rem;
             text-align: center;
             font-size: 0.9rem;
+            background: white;
+            color: #333;
         }
 
         .save-btn {
@@ -137,12 +135,6 @@
             transition: all 0.3s;
         }
 
-        .home-btn:hover {
-            background-color: #e05555;
-            color: white;
-            transform: translateY(-2px);
-        }
-
         @media (max-width: 400px) {
             .characters-grid {
                 grid-template-columns: 1fr;
@@ -169,7 +161,7 @@
 
     <div class="main-content">
         <div class="instructions">
-            <h3>Расставь аниме-персонажей по своему вкусу!</h3>
+            <h3>Расставь персонажей "Класса убийц" по своему вкусу!</h3>
             <p>Перетаскивай карточки, чтобы изменить их порядок</p>
         </div>
 
@@ -183,18 +175,18 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Аниме-персонажи
+        // Персонажи из "Класса убийц"
         const characters = [
-            { id: 1, name: "Наруто Узумаки", image: "https://i.imgur.com/J5Q6S1V.jpg" },
-            { id: 2, name: "Гон Фрикс", image: "https://i.imgur.com/3sXhTjU.jpg" },
-            { id: 3, name: "Эрен Йегер", image: "https://i.imgur.com/9YQ7Z6f.jpg" },
-            { id: 4, name: "Сэйлор Мун", image: "https://i.imgur.com/4WXhL9y.jpg" },
-            { id: 5, name: "Спайк Шпигель", image: "https://i.imgur.com/7V5vWQq.jpg" },
-            { id: 6, name: "Хината Хьюга", image: "https://i.imgur.com/2QZt8gG.jpg" },
-            { id: 7, name: "Лелуш Ламперуж", image: "https://i.imgur.com/5tKvQ6x.jpg" },
-            { id: 8, name: "Аска Лэнгли", image: "https://i.imgur.com/8mRvD3J.jpg" },
-            { id: 9, name: "Киллуа Золдик", image: "https://i.imgur.com/1qX3fY7.jpg" },
-            { id: 10, name: "Мику Накано", image: "https://i.imgur.com/6Y9d2Wp.jpg" }
+            { id: 1, name: "Коро-сенсей", image: "https://i.imgur.com/JYjVl4a.jpg" },
+            { id: 2, name: "Нагиса Шиота", image: "https://i.imgur.com/5mQvZ8F.jpg" },
+            { id: 3, name: "Карина Асано", image: "https://i.imgur.com/YUpSMiA.jpeg" },
+            { id: 4, name: "Котаро Танака", image: "https://i.imgur.com/3sXhTjU.jpg" },
+            { id: 5, name: "Юма Исогай", image: "https://i.imgur.com/9YQ7Z6f.jpg" },
+            { id: 6, name: "Манабу Окада", image: "https://i.imgur.com/4WXhL9y.jpg" },
+            { id: 7, name: "Юки Кайджи", image: "https://i.imgur.com/7V5vWQq.jpg" },
+            { id: 8, name: "Рюносуке Чиба", image: "https://i.imgur.com/2QZt8gG.jpg" },
+            { id: 9, name: "Хирото Маэхара", image: "https://i.imgur.com/5tKvQ6x.jpg" },
+            { id: 10, name: "Рицуна Маэхара", image: "https://i.imgur.com/8mRvD3J.jpg" }
         ];
 
         // Инициализация
@@ -212,28 +204,23 @@
                 document.getElementById('progressBar').style.width = '100%';
             }
 
-            // Загружаем сохранённый порядок или используем стандартный
             let savedOrder = JSON.parse(localStorage.getItem('task3CharacterOrder'));
             if (!savedOrder) {
                 savedOrder = characters.map(c => c.id);
             }
 
-            // Сортируем персонажей согласно сохранённому порядку
             const sortedCharacters = [...characters].sort((a, b) => {
                 return savedOrder.indexOf(a.id) - savedOrder.indexOf(b.id);
             });
 
-            // Добавляем персонажей в сетку
             const grid = document.getElementById('charactersGrid');
             sortedCharacters.forEach(character => {
                 const characterElement = createCharacterElement(character);
                 grid.appendChild(characterElement);
             });
 
-            // Инициализируем перетаскивание
             initDragAndDrop();
 
-            // Обработчик кнопки сохранения
             saveBtn.addEventListener('click', function() {
                 const characterOrder = Array.from(document.querySelectorAll('.character-item'))
                     .map(el => parseInt(el.dataset.id));
@@ -245,17 +232,14 @@
                 document.getElementById('progressCount').textContent = 'Завершено';
                 document.getElementById('progressBar').style.width = '100%';
 
-                // Обновляем баллы на главной странице
-                updateMainPagePoints(30); // 30 баллов за выполнение задания
+                updateMainPagePoints(30);
 
-                // Вибрация успеха
                 if ('vibrate' in navigator) {
                     navigator.vibrate([100, 50, 100]);
                 }
             });
         });
 
-        // Создаём элемент персонажа
         function createCharacterElement(character) {
             const div = document.createElement('div');
             div.className = 'character-item';
@@ -267,133 +251,102 @@
             return div;
         }
 
-        // Инициализация перетаскивания
         function initDragAndDrop() {
             const charactersGrid = document.getElementById('charactersGrid');
             const characterItems = document.querySelectorAll('.character-item');
 
             let draggedItem = null;
+            let touchStartY = 0;
 
-            // Для мобильных устройств
             characterItems.forEach(item => {
-                item.addEventListener('touchstart', handleTouchStart, { passive: false });
-                item.addEventListener('touchmove', handleTouchMove, { passive: false });
-                item.addEventListener('touchend', handleTouchEnd);
-            });
-
-            // Для десктопов
-            characterItems.forEach(item => {
-                item.setAttribute('draggable', true);
-                item.addEventListener('dragstart', handleDragStart);
-                item.addEventListener('dragover', handleDragOver);
-                item.addEventListener('dragenter', handleDragEnter);
-                item.addEventListener('dragleave', handleDragLeave);
-                item.addEventListener('drop', handleDrop);
-                item.addEventListener('dragend', handleDragEnd);
-            });
-
-            function handleTouchStart(e) {
-                e.preventDefault();
-                draggedItem = this;
-                draggedItem.classList.add('dragging');
-
-                // Вибрация
-                if ('vibrate' in navigator) {
-                    navigator.vibrate(10);
-                }
-            }
-
-            function handleTouchMove(e) {
-                if (!draggedItem) return;
-                e.preventDefault();
-
-                const touch = e.touches[0];
-                const touchY = touch.clientY;
-
-                // Позиционируем перетаскиваемый элемент
-                draggedItem.style.position = 'absolute';
-                draggedItem.style.top = `${touchY - draggedItem.offsetHeight / 2}px`;
-                draggedItem.style.left = `${draggedItem.offsetLeft}px`;
-
-                // Определяем, над каким элементом находимся
-                const elementsBelow = document.elementsFromPoint(touch.clientX, touch.clientY);
-                const characterBelow = elementsBelow.find(el => el.classList.contains('character-item') && el !== draggedItem);
-
-                if (characterBelow) {
-                    const rect = characterBelow.getBoundingClientRect();
-                    const midpoint = rect.top + rect.height / 2;
-
-                    if (touchY < midpoint) {
-                        // Вставляем перед элементом
-                        charactersGrid.insertBefore(draggedItem, characterBelow);
-                    } else {
-                        // Вставляем после элемента
-                        charactersGrid.insertBefore(draggedItem, characterBelow.nextSibling);
-                    }
-                }
-            }
-
-            function handleTouchEnd() {
-                if (!draggedItem) return;
-
-                draggedItem.classList.remove('dragging');
-                draggedItem.style.position = '';
-                draggedItem.style.top = '';
-                draggedItem.style.left = '';
-                draggedItem = null;
-            }
-
-            function handleDragStart(e) {
-                draggedItem = this;
-                draggedItem.classList.add('dragging');
-                e.dataTransfer.effectAllowed = 'move';
-                e.dataTransfer.setData('text/html', this.innerHTML);
-            }
-
-            function handleDragOver(e) {
-                if (e.preventDefault) {
+                item.addEventListener('touchstart', function(e) {
                     e.preventDefault();
-                }
-                e.dataTransfer.dropEffect = 'move';
-                return false;
-            }
+                    draggedItem = this;
+                    draggedItem.classList.add('dragging');
+                    touchStartY = e.touches[0].clientY;
 
-            function handleDragEnter(e) {
-                this.classList.add('over');
-            }
+                    if ('vibrate' in navigator) {
+                        navigator.vibrate(10);
+                    }
+                }, { passive: false });
 
-            function handleDragLeave() {
-                this.classList.remove('over');
-            }
+                item.addEventListener('touchmove', function(e) {
+                    if (!draggedItem) return;
+                    e.preventDefault();
 
-            function handleDrop(e) {
-                if (e.stopPropagation) {
-                    e.stopPropagation();
-                }
+                    const touch = e.touches[0];
+                    const touchY = touch.clientY;
 
-                if (draggedItem !== this) {
-                    charactersGrid.insertBefore(draggedItem, this);
-                }
+                    draggedItem.style.position = 'absolute';
+                    draggedItem.style.top = `${touchY - draggedItem.offsetHeight / 2}px`;
+                    draggedItem.style.left = `${draggedItem.offsetLeft}px`;
 
-                return false;
-            }
+                    const elementsBelow = document.elementsFromPoint(touch.clientX, touch.clientY);
+                    const characterBelow = elementsBelow.find(el => el.classList.contains('character-item') && el !== draggedItem);
 
-            function handleDragEnd() {
-                characterItems.forEach(item => {
-                    item.classList.remove('over');
-                    item.classList.remove('dragging');
+                    if (characterBelow) {
+                        const rect = characterBelow.getBoundingClientRect();
+                        const midpoint = rect.top + rect.height / 2;
+
+                        if (touchY < midpoint) {
+                            charactersGrid.insertBefore(draggedItem, characterBelow);
+                        } else {
+                            charactersGrid.insertBefore(draggedItem, characterBelow.nextSibling);
+                        }
+                    }
+                }, { passive: false });
+
+                item.addEventListener('touchend', function() {
+                    if (!draggedItem) return;
+
+                    draggedItem.classList.remove('dragging');
+                    draggedItem.style.position = '';
+                    draggedItem.style.top = '';
+                    draggedItem.style.left = '';
+                    draggedItem = null;
                 });
-            }
+
+                // Для десктопов
+                item.setAttribute('draggable', true);
+                item.addEventListener('dragstart', function() {
+                    draggedItem = this;
+                    draggedItem.classList.add('dragging');
+                });
+
+                item.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                });
+
+                item.addEventListener('dragenter', function(e) {
+                    e.preventDefault();
+                    this.classList.add('over');
+                });
+
+                item.addEventListener('dragleave', function() {
+                    this.classList.remove('over');
+                });
+
+                item.addEventListener('drop', function() {
+                    if (draggedItem !== this) {
+                        charactersGrid.insertBefore(draggedItem, this);
+                    }
+                    this.classList.remove('over');
+                });
+
+                item.addEventListener('dragend', function() {
+                    characterItems.forEach(item => {
+                        item.classList.remove('over');
+                        item.classList.remove('dragging');
+                    });
+                });
+            });
         }
 
-        // Обновление баллов на главной странице
         function updateMainPagePoints(points) {
-            // Если главная страница открыта в другом окне
             if (window.opener) {
                 window.opener.updatePoints(points);
             }
 
-            // Обновляем в localStorage для главной страницы
             const currentPoints = parseInt(localStorage.getItem('userPoints') || '0');
             localStorage.setItem('userPoints', (currentPoints + points).toString());
         }
