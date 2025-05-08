@@ -216,6 +216,50 @@
                 height: 50px;
             }
         }
+
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Всегда 2 колонки */
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .item-card {
+            background: white;
+            border-radius: 8px;
+            padding: 0.8rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            min-height: 60px; /* Минимальная высота */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Уменьшаем отступы на очень маленьких экранах */
+        @media (max-width: 400px) {
+            .items-grid {
+                gap: 0.5rem;
+            }
+
+            .item-card {
+                padding: 0.6rem;
+                min-height: 50px;
+            }
+
+            .item-text {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Для экранов шире 600px можно увеличить размер карточек */
+        @media (min-width: 600px) {
+            .item-card {
+                min-height: 80px;
+            }
+        }
     </style>
 </head>
 <body>
