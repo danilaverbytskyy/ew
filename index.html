@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>День Рождения - Конкурсы</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+        }
+        .birthday-header {
+            background-color: #ff6b6b;
+            color: white;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .greeting {
+            font-size: 1.5rem;
+            margin: 1rem 0;
+            min-height: 2.5rem;
+            color: #495057;
+        }
+        .points-display {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #20c997;
+            margin: 1rem 0;
+        }
+        .task-btn {
+            margin: 0.5rem;
+            padding: 1rem;
+            font-size: 1.2rem;
+            background-color: #4cc9f0;
+            border: none;
+            transition: transform 0.3s;
+        }
+        .task-btn:hover {
+            transform: scale(1.05);
+            background-color: #4895ef;
+        }
+        .input-name {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="birthday-header">
+            <h1>🎉 Добро пожаловать на мой День Рождения! 🎉</h1>
+            <p class="lead">Прими участие в конкурсах и заработай баллы!</p>
+        </div>
+
+        <div class="text-center mb-4">
+            <div class="input-group input-name">
+                <span class="input-group-text">Ваше имя:</span>
+                <input type="text" class="form-control" id="nameInput" placeholder="Введите ваше имя">
+            </div>
+        </div>
+
+        <div class="greeting text-center" id="greeting"></div>
+
+        <div class="points-display text-center">
+            Баллы: <span id="pointsDisplay">0</span>
+        </div>
+
+        <div class="d-flex flex-column flex-md-row justify-content-center mt-4">
+            <a href="task1.html" class="btn task-btn" id="task1Btn">Конкурс 1</a>
+            <a href="task2.html" class="btn task-btn" id="task2Btn">Конкурс 2</a>
+            <a href="task3.html" class="btn task-btn" id="task3Btn">Конкурс 3</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Сохраняем имя и баллы в localStorage
+        const nameInput = document.getElementById('nameInput');
+        const greeting = document.getElementById('greeting');
+        const pointsDisplay = document.getElementById('pointsDisplay');
+
+        // Проверяем, есть ли сохраненные данные
+        if(localStorage.getItem('userName')) {
+            nameInput.value = localStorage.getItem('userName');
+            updateGreeting();
+        }
+
+        if(localStorage.getItem('userPoints')) {
+            pointsDisplay.textContent = localStorage.getItem('userPoints');
+        }
+
+        // Обновляем приветствие при изменении имени
+        nameInput.addEventListener('input', function() {
+            localStorage.setItem('userName', this.value);
+            updateGreeting();
+        });
+
+        function updateGreeting() {
+            if(nameInput.value.trim() !== '') {
+                greeting.textContent = `Привет, ${nameInput.value}! Готов к конкурсам?`;
+            } else {
+                greeting.textContent = '';
+            }
+        }
+
+        // Обновляем баллы (можно вызывать из других страниц)
+        function updatePoints(points) {
+            localStorage.setItem('userPoints', points);
+            pointsDisplay.textContent = points;
+        }
+    </script>
+</body>
+</html>
