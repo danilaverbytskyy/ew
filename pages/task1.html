@@ -422,7 +422,30 @@
         });
 
         if (userAnswer === correctAnswer) {
-            // ... (код для правильного ответа без изменений) ...
+            feedback.style.display = 'block';
+
+            // Записываем время ответа
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById(`timeStamp-${index}`).textContent = `Правильно отвечено: ${timeString}`;
+
+            // Сохраняем в localStorage
+            let correctAnswers = JSON.parse(localStorage.getItem('task1CorrectAnswers') || '[]');
+            if (!correctAnswers.includes(index)) {
+                correctAnswers.push(index);
+                localStorage.setItem('task1CorrectAnswers', JSON.stringify(correctAnswers));
+                localStorage.setItem(`task1-answer-${index}`, userAnswer);
+
+                // Обновляем баллы на главной странице
+                updateMainPagePoints(correctAnswers.length);
+            }
+
+            updateProgress();
+
+            // Вибрация для мобильных
+            if ('vibrate' in navigator) {
+                navigator.vibrate(50);
+            }
         } else {
             // Генерируем случайную фразу/действие при каждом неправильном ответе
             const phrases = [
@@ -431,7 +454,7 @@
                 {type: 'text', content: 'Попробуй ещё раз!'},
                 {type: 'text', content: 'К сожалению, неверно('},
                 {type: 'text', content: 'Ну нет же!'},
-                {type: 'text', content: 'Мимо!'},
+                {type: 'text', content: 'Мне не нрав!'},
                 {type: 'text', content: 'Вахуи!'},
                 {type: 'text', content: 'Блять?!(голосом лизы)'},
                 {type: 'text', content: 'Это тебе на подумать еще попытка'},
