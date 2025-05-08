@@ -154,15 +154,15 @@
         </div>
 
         <div class="task-container mt-4">
-            <a href="task1.html" class="btn task-btn animated" style="animation-delay: 0.1s" id="task1Btn">
+            <a href="pages/task1.html" class="btn task-btn animated" style="animation-delay: 0.1s" id="task1Btn">
                 <span class="d-block">🎯</span>
                 Конкурс 1
             </a>
-            <a href="task2.html" class="btn task-btn animated" style="animation-delay: 0.2s" id="task2Btn">
+            <a href="pages/task2.html" class="btn task-btn animated" style="animation-delay: 0.2s" id="task2Btn">
                 <span class="d-block">🎨</span>
                 Конкурс 2
             </a>
-            <a href="task3.html" class="btn task-btn animated" style="animation-delay: 0.3s" id="task3Btn">
+            <a href="pages/task3.html" class="btn task-btn animated" style="animation-delay: 0.3s" id="task3Btn">
                 <span class="d-block">🧩</span>
                 Конкурс 3
             </a>
@@ -208,7 +208,10 @@
 
         function updateGreeting() {
             if(nameInput.value.trim() !== '') {
-                greeting.textContent = `Привет, ${nameInput.value}! Готов к конкурсам?`;
+                greeting.textContent = `Привет, ${nameInput.value}!`;
+                if (nameInput.value.length >= 3) {
+                    greeting.textContent = `Привет, ${nameInput.value}! I rly like ur name btw`;
+                }
                 greeting.classList.add('animated');
             } else {
                 greeting.textContent = '';
