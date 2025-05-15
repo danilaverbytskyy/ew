@@ -471,6 +471,7 @@
             incorrectFeedback.style.display = 'block';
         } else if (randomResponse.type === 'image') {
             const incorrectImage = document.getElementById(`incorrect-image-${index}`);
+            incorrectImage.src = randomResponse.content;
             incorrectImage.style.display = 'block';
         }
 
