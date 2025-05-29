@@ -225,11 +225,24 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    const promoCodes = {
+    // Инициализируем промокоды в localStorage, если их еще нет
+    if (!localStorage.getItem('promoCodes')) {
+        const initialPromoCodes = {
             "СКОРОСТРЕЛ": 15,
             "BUTTON": 15,
         };
+        localStorage.setItem('promoCodes', JSON.stringify(initialPromoCodes));
+    }
 
+    // Функция для получения текущих промокодов
+    function getPromoCodes() {
+        return JSON.parse(localStorage.getItem('promoCodes')) || {};
+    }
+
+    // Функция для сохранения промокодов
+    function savePromoCodes(codes) {
+        localStorage.setItem('promoCodes', JSON.stringify(codes));
+    }
 
     // Сохраняем имя и баллы в localStorage
     const nameInput = document.getElementById('nameInput');
@@ -260,65 +273,70 @@
         });
 
         setTimeout(() => {
+            document.getElementById('promoContainer').style.display = 'block';
+        }, 5000);
+
+        // Обработчик промокода
+        document.getElementById('promoBtn').addEventListener('click', activatePromo);
+        document.getElementById('promoInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') activatePromo();
+        });
+
+        // Секретный способ открытия промокодов (тройной тап)
+        let tapCount = 0;
+        document.addEventListener('click', function() {
+            tapCount++;
+            if (tapCount >= 3) {
                 document.getElementById('promoContainer').style.display = 'block';
-            }, 5000);
-
-            // Обработчик промокода
-            document.getElementById('promoBtn').addEventListener('click', activatePromo);
-            document.getElementById('promoInput').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') activatePromo();
-            });
-
-            // Секретный способ открытия промокодов (тройной тап)
-            let tapCount = 0;
-            document.addEventListener('click', function() {
-                tapCount++;
-                if (tapCount >= 3) {
-                    document.getElementById('promoContainer').style.display = 'block';
-                    tapCount = 0;
-                }
-                setTimeout(() => { tapCount = 0; }, 1000);
-            });
+                tapCount = 0;
+            }
+            setTimeout(() => { tapCount = 0; }, 1000);
+        });
     });
 
     function activatePromo() {
-            const promoInput = document.getElementById('promoInput');
-            const promoFeedback = document.getElementById('promoFeedback');
-            const code = promoInput.value.trim().toUpperCase();
+        const promoInput = document.getElementById('promoInput');
+        const promoFeedback = document.getElementById('promoFeedback');
+        const code = promoInput.value.trim().toUpperCase();
 
-            if (promoCodes[code]) {
-                const pointsToAdd = promoCodes[code];
-                const currentPoints = parseInt(localStorage.getItem('userPoints') || 0);
-                const newPoints = currentPoints + pointsToAdd;
+        // Получаем текущие промокоды
+        const promoCodes = getPromoCodes();
 
-                localStorage.setItem('userPoints', newPoints.toString());
-                updatePoints(newPoints);
+        if (promoCodes[code]) {
+            const pointsToAdd = promoCodes[code];
+            const currentPoints = parseInt(localStorage.getItem('userPoints') || 0);
+            const newPoints = currentPoints + pointsToAdd;
 
-                promoFeedback.textContent = `Промокод активирован! +${pointsToAdd} баллов`;
-                promoFeedback.style.color = "var(--accent-color)";
+            // Обновляем баллы
+            localStorage.setItem('userPoints', newPoints.toString());
+            updatePoints(newPoints);
 
-                // Удаляем использованный промокод
-                delete promoCodes[code];
+            // Удаляем использованный промокод
+            delete promoCodes[code];
+            savePromoCodes(promoCodes);
 
-                // Вибрация успеха
-                if ('vibrate' in navigator) {
-                    navigator.vibrate([100, 50, 100]);
-                }
-            } else {
-                promoFeedback.textContent = "Неверный промокод";
-                promoFeedback.style.color = "var(--primary-color)";
+            promoFeedback.textContent = `Промокод активирован! +${pointsToAdd} баллов`;
+            promoFeedback.style.color = "var(--accent-color)";
 
-                // Вибрация ошибки
-                if ('vibrate' in navigator) {
-                    navigator.vibrate(200);
-                }
+            // Вибрация успеха
+            if ('vibrate' in navigator) {
+                navigator.vibrate([100, 50, 100]);
             }
+        } else {
+            promoFeedback.textContent = "Неверный промокод";
+            promoFeedback.style.color = "var(--primary-color)";
 
-            promoInput.value = '';
-            setTimeout(() => {
-                promoFeedback.textContent = '';
-            }, 3000);
+            // Вибрация ошибки
+            if ('vibrate' in navigator) {
+                navigator.vibrate(200);
+            }
         }
+
+        promoInput.value = '';
+        setTimeout(() => {
+            promoFeedback.textContent = '';
+        }, 3000);
+    }
 
     // Обновляем приветствие при изменении имени
     nameInput.addEventListener('input', function () {
