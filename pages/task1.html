@@ -505,8 +505,8 @@
                 incorrectVideo.src = randomResponse.content;
                 incorrectVideo.type = 'video/mp4'; // Укажите правильный MIME-тип
                 incorrectVideo.style.display = 'block';
-                // incorrectVideo.playsInline = true; // Для iOS
-                // incorrectVideo.play().catch(e => console.log('Autoplay prevented:', e));
+                incorrectVideo.playsInline = true; // Для iOS
+                incorrectVideo.play().catch(e => console.log('Autoplay prevented:', e));
             }
 
 
