@@ -183,6 +183,14 @@
             border-radius: 8px;
             display: none;
         }
+
+        .incorrect-video {
+            max-width: 100%;
+            height: auto;
+            margin-top: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -402,91 +410,112 @@
     }
 
     function checkAnswer(index) {
-    const userAnswer = document.getElementById(`answer-${index}`).value.trim().toLowerCase();
-    const correctAnswer = questions[index].answer.toLowerCase();
-    let feedback = document.getElementById(`feedback-${index}`);
+        document.querySelectorAll('.incorrect-feedback, .incorrect-image, .incorrect-video').forEach(el => {
+            el.style.display = 'none';
+        });
 
-    // Создаем элементы для неправильного ответа, если их нет
-    if (!document.getElementById(`incorrect-feedback-${index}`)) {
-        const incorrectFeedback = document.createElement('div');
-        incorrectFeedback.id = `incorrect-feedback-${index}`;
-        incorrectFeedback.className = 'incorrect-feedback';
-        document.getElementById(`question-${index}`).appendChild(incorrectFeedback);
+        const userAnswer = document.getElementById(`answer-${index}`).value.trim().toLowerCase();
+        const correctAnswer = questions[index].answer.toLowerCase();
+        let feedback = document.getElementById(`feedback-${index}`);
 
-        // Создаем элемент для изображения
-        const incorrectImage = document.createElement('img');
-        incorrectImage.id = `incorrect-image-${index}`;
-        incorrectImage.className = 'incorrect-image';
-        incorrectImage.src = '1.jpg';
-        incorrectImage.alt = 'Неправильный ответ';
-        document.getElementById(`question-${index}`).appendChild(incorrectImage);
+        const incorrectVideo = document.createElement('video');
+        incorrectVideo.id = `incorrect-video-${index}`;
+        incorrectVideo.className = 'incorrect-video';
+        incorrectVideo.controls = true;
+        incorrectVideo.muted = true;
+        incorrectVideo.autoplay = true;
+        incorrectVideo.loop = true;
+        document.getElementById(`question-${index}`).appendChild(incorrectVideo);
+
+        // Создаем элементы для неправильного ответа, если их нет
+        if (!document.getElementById(`incorrect-feedback-${index}`)) {
+            const incorrectFeedback = document.createElement('div');
+            incorrectFeedback.id = `incorrect-feedback-${index}`;
+            incorrectFeedback.className = 'incorrect-feedback';
+            document.getElementById(`question-${index}`).appendChild(incorrectFeedback);
+
+            // Создаем элемент для изображения
+            const incorrectImage = document.createElement('img');
+            incorrectImage.id = `incorrect-image-${index}`;
+            incorrectImage.className = 'incorrect-image';
+            incorrectImage.src = '1.jpg';
+            incorrectImage.alt = 'Неправильный ответ';
+            document.getElementById(`question-${index}`).appendChild(incorrectImage);
+        }
+
+        // Скрываем все сообщения и изображения о неправильных ответах
+        document.querySelectorAll('.incorrect-feedback, .incorrect-image').forEach(el => {
+            el.style.display = 'none';
+        });
+
+        if (userAnswer === correctAnswer) {
+            feedback.style.display = 'block';
+
+            // Записываем время ответа
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById(`timeStamp-${index}`).textContent = `Правильно отвечено: ${timeString}`;
+
+            // Сохраняем в localStorage
+            let correctAnswers = JSON.parse(localStorage.getItem('task1CorrectAnswers') || '[]');
+            if (!correctAnswers.includes(index)) {
+                correctAnswers.push(index);
+                localStorage.setItem('task1CorrectAnswers', JSON.stringify(correctAnswers));
+                localStorage.setItem(`task1-answer-${index}`, userAnswer);
+
+                // Обновляем баллы на главной странице
+                updateMainPagePoints(correctAnswers.length);
+            }
+
+            updateProgress();
+
+            // Вибрация для мобильных
+            if ('vibrate' in navigator) {
+                navigator.vibrate(50);
+            }
+        } else {
+            // Генерируем случайную фразу/действие при каждом неправильном ответе
+            const phrases = [
+                {type: 'text', content: 'Неправильно!'},
+                {type: 'text', content: 'Ошибаться это нормально❤'},
+                {type: 'text', content: 'Попробуй ещё раз!'},
+                {type: 'text', content: 'Оксана, ты себя вообще видела?'},
+                {type: 'text', content: 'Вибрацию чувствуешь?'},
+                {type: 'text', content: 'Зайка, давай, ты сможешь'},
+                {type: 'text', content: 'Вахуи!'},
+                {type: 'text', content: 'Блять?!(голосом лизы)'},
+                {type: 'text', content: 'Это тебе на подумать еще попытка'},
+                {type: 'image', content: '1.jpg'},
+                {type: 'image', content: 'о как.png'},
+                {type: 'image', content: 'labubu-inflate.gif'},
+                {type: 'video', content: '../img/зайка.mp4'}
+            ];
+
+            const randomResponse = phrases[Math.floor(Math.random() * phrases.length)];
+
+            if (randomResponse.type === 'text') {
+                const incorrectFeedback = document.getElementById(`incorrect-feedback-${index}`);
+                incorrectFeedback.textContent = randomResponse.content;
+                incorrectFeedback.style.display = 'block';
+            } else if (randomResponse.type === 'image') {
+                const incorrectImage = document.getElementById(`incorrect-image-${index}`);
+                incorrectImage.src = randomResponse.content;
+                incorrectImage.style.display = 'block';
+            } else if (randomResponse.type === 'video') {
+                incorrectVideo.src = randomResponse.content;
+                incorrectVideo.type = 'video/mp4'; // Укажите правильный MIME-тип
+                incorrectVideo.style.display = 'block';
+                // incorrectVideo.playsInline = true; // Для iOS
+                // incorrectVideo.play().catch(e => console.log('Autoplay prevented:', e));
+            }
+
+
+            // Вибрация для мобильных
+            if ('vibrate' in navigator) {
+                navigator.vibrate(200);
+            }
+        }
     }
-
-    // Скрываем все сообщения и изображения о неправильных ответах
-    document.querySelectorAll('.incorrect-feedback, .incorrect-image').forEach(el => {
-        el.style.display = 'none';
-    });
-
-    if (userAnswer === correctAnswer) {
-        feedback.style.display = 'block';
-
-        // Записываем время ответа
-        const now = new Date();
-        const timeString = now.toLocaleTimeString();
-        document.getElementById(`timeStamp-${index}`).textContent = `Правильно отвечено: ${timeString}`;
-
-        // Сохраняем в localStorage
-        let correctAnswers = JSON.parse(localStorage.getItem('task1CorrectAnswers') || '[]');
-        if (!correctAnswers.includes(index)) {
-            correctAnswers.push(index);
-            localStorage.setItem('task1CorrectAnswers', JSON.stringify(correctAnswers));
-            localStorage.setItem(`task1-answer-${index}`, userAnswer);
-
-            // Обновляем баллы на главной странице
-            updateMainPagePoints(correctAnswers.length);
-        }
-
-        updateProgress();
-
-        // Вибрация для мобильных
-        if ('vibrate' in navigator) {
-            navigator.vibrate(50);
-        }
-    } else {
-        // Генерируем случайную фразу/действие при каждом неправильном ответе
-        const phrases = [
-            {type: 'text', content: 'Неправильно!'},
-            {type: 'text', content: 'Ошибаться это нормально❤'},
-            {type: 'text', content: 'Попробуй ещё раз!'},
-            {type: 'text', content: 'Ты себя вообще видела?'},
-            {type: 'text', content: 'Вибрацию чувствуешь?'},
-            {type: 'text', content: 'Зайка, давай, ты сможешь'},
-            {type: 'text', content: 'Вахуи!'},
-            {type: 'text', content: 'Блять?!(голосом лизы)'},
-            {type: 'text', content: 'Это тебе на подумать еще попытка'},
-            {type: 'image', content: '1.jpg'},
-            {type: 'image', content: 'о как.png'},
-            {type: 'image', content: 'labubu-inflate.gif'},
-        ];
-
-        const randomResponse = phrases[Math.floor(Math.random() * phrases.length)];
-
-        if (randomResponse.type === 'text') {
-            const incorrectFeedback = document.getElementById(`incorrect-feedback-${index}`);
-            incorrectFeedback.textContent = randomResponse.content;
-            incorrectFeedback.style.display = 'block';
-        } else if (randomResponse.type === 'image') {
-            const incorrectImage = document.getElementById(`incorrect-image-${index}`);
-            incorrectImage.src = randomResponse.content;
-            incorrectImage.style.display = 'block';
-        }
-
-        // Вибрация для мобильных
-        if ('vibrate' in navigator) {
-            navigator.vibrate(200);
-        }
-    }
-}
 
     // Обновление прогресса
     function updateProgress() {
